@@ -3,428 +3,383 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>John Doe - Animated Portfolio</title>
+    <title>John Doe - Software Developer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Animation Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
 
     <style>
-        /* Base styles */
+        :root {
+            --dark-navy: #0a192f;
+            --navy: #112240;
+            --light-navy: #233554;
+            --slate: #8892b0;
+            --light-slate: #a8b2d1;
+            --lightest-slate: #ccd6f6;
+            --white: #e6f1ff;
+            --accent: #00c6ff; /* Electric blue accent */
+        }
+
+        @keyframes animated-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #ffffff;
-            color: #4b5563;
-            transition: background-color 0.5s ease, color 0.5s ease;
-            cursor: none; /* Hide default cursor */
+            background-color: var(--dark-navy);
+            background-image: radial-gradient(at 20% 20%, hsla(217, 71%, 15%, 1) 0px, transparent 50%),
+                              radial-gradient(at 80% 20%, hsla(195, 100%, 15%, 1) 0px, transparent 50%),
+                              radial-gradient(at 20% 80%, hsla(217, 71%, 15%, 1) 0px, transparent 50%),
+                              radial-gradient(at 80% 80%, hsla(195, 100%, 15%, 1) 0px, transparent 50%);
+            background-size: 200% 200%;
+            animation: animated-gradient 15s ease infinite;
+            color: var(--slate);
         }
 
-        /* Dark mode styles */
-        .dark body {
-            background-color: #111827;
-            color: #d1d5db;
+        /* Webkit scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--dark-navy); }
+        ::-webkit-scrollbar-thumb { background: var(--light-navy); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #303C55; }
+
+        .font-mono {
+            font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
         }
 
-        /* Custom Cursor */
-        .cursor-dot, .cursor-outline {
-            pointer-events: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            z-index: 9999;
-            opacity: 0; /* Initially hidden */
-            transition: transform 0.2s ease-in-out;
+        .text-accent { color: var(--accent); }
+        .text-slate { color: var(--slate); }
+        .text-light-slate { color: var(--light-slate); }
+        .text-lightest-slate { color: var(--lightest-slate); }
+        
+        .btn {
+            color: var(--accent);
+            background-color: transparent;
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            line-height: 1;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
         }
-        .cursor-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #4f46e5;
-        }
-        .cursor-outline {
-            width: 40px;
-            height: 40px;
-            background-color: rgba(79, 70, 229, 0.2);
-        }
-        .cursor-interact {
-            transform: translate(-50%, -50%) scale(1.5);
-            background-color: rgba(79, 70, 229, 0.3);
+        .btn:hover {
+            background-color: rgba(0, 198, 255, 0.1);
         }
 
-
-        /* Preloader */
-        #preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #111827;
+        .numbered-heading {
             display: flex;
-            justify-content: center;
             align-items: center;
-            z-index: 10000;
+            position: relative;
+            margin: 10px 0 40px;
+            width: 100%;
+            font-size: clamp(26px, 5vw, 32px);
+            white-space: nowrap;
         }
-        #preloader .loader-text {
-            color: white;
-            font-size: 2rem;
-            font-weight: bold;
+        .numbered-heading::before {
+            position: relative;
+            bottom: -2px;
+            counter-increment: section;
+            content: '0' counter(section) '.';
+            margin-right: 10px;
+            color: var(--accent);
+            font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+            font-size: clamp(16px, 3vw, 20px);
+            font-weight: 400;
+        }
+        .numbered-heading::after {
+            content: '';
+            display: block;
+            position: relative;
+            top: 0;
+            width: 100%;
+            height: 1px;
+            margin-left: 20px;
+            background-color: var(--light-navy);
+        }
+        @media (min-width: 768px) {
+             .numbered-heading::after {
+                width: 300px;
+             }
+        }
+        
+        /* Side Nav Highlighting */
+        .side-nav a.active {
+            color: var(--accent);
+            transform: translateX(3px);
         }
 
-        /* Glass Effect for Header */
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        /* Project Card Styling */
+        .project-description-box {
+            background-color: var(--light-navy);
+            box-shadow: 0 10px 30px -15px rgba(2,12,27,0.7);
+            transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
         }
-        .dark .glass-effect {
-            background: rgba(17, 24, 39, 0.6);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        .project-card:hover .project-description-box {
+            box-shadow: 0 20px 30px -15px rgba(2,12,27,0.7);
+            transform: translateY(-5px);
         }
-        
-        /* Project card styles */
-        .project-card {
-            background-color: #f3f4f6;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
+        .project-image-container {
+            border: 2px solid transparent;
+            transition: border-color 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
         }
-        .dark .project-card {
-            background-color: #1f2937;
+        .project-card:hover .project-image-container {
+            border-color: var(--accent);
         }
-        .tag {
-            background-color: #e5e7eb;
-            color: #374151;
+        .project-image-container img {
+            transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
         }
-        .dark .tag {
-            background-color: #374151;
-            color: #e5e7eb;
+        .project-card:hover .project-image-container img {
+             filter: brightness(1.1);
         }
-        
-        /* Skill Bar */
-        .skill-bar-container { background-color: #e5e7eb; }
-        .dark .skill-bar-container { background-color: #374151; }
-        .skill-bar {
-            background-color: #4f46e5;
-            transform: scaleX(0);
-            transform-origin: left;
-        }
-        
-        /* Hide scrollbar */
-        ::-webkit-scrollbar {
-            width: 0px;
-            background: transparent;
+
+        /* Reveal animation initial state */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
         }
     </style>
 </head>
-<body class="antialiased">
-    <!-- Custom Cursor Elements -->
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
+<body style="counter-reset: section;">
 
-    <!-- Preloader -->
-    <div id="preloader">
-        <span class="loader-text">JD</span>
-    </div>
-
-    <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 glass-effect transition-colors duration-500">
+    <!-- HEADER & MOBILE NAV -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-opacity-90 backdrop-blur-md" style="background-color: rgba(10, 25, 47, 0.85);">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-indigo-600 dark:text-white">JD</a>
-            <div class="hidden md:flex items-center space-x-6">
-                <a href="#about" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-white transition-colors">About</a>
-                <a href="#projects" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-white transition-colors">Projects</a>
-                <a href="#skills" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-white transition-colors">Skills</a>
-                <a href="#contact" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-white transition-colors">Contact</a>
-                <button id="theme-toggle" class="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-                    <!-- Sun and Moon Icons -->
-                    <svg id="theme-icon-light" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    <svg id="theme-icon-dark" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                </button>
+            <a href="#" class="text-2xl font-bold text-accent">JD</a>
+            <div class="hidden md:flex items-center space-x-6 font-mono text-sm">
+                <a href="#about" class="text-light-slate hover:text-accent transition-colors">01. About</a>
+                <a href="#projects" class="text-light-slate hover:text-accent transition-colors">02. Work</a>
+                <a href="#contact" class="text-light-slate hover:text-accent transition-colors">03. Contact</a>
             </div>
-             <div class="md:hidden">
-                <button id="menu-btn" class="text-gray-800 dark:text-white focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-accent focus:outline-none z-50 relative">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path id="menu-open-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path><path id="menu-close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
         </nav>
-        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800">
-             <a href="#about" class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">About</a>
-             <a href="#projects" class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">Projects</a>
-             <a href="#skills" class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">Skills</a>
-             <a href="#contact" class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">Contact</a>
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="fixed inset-0 bg-navy z-40 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+            <div class="flex flex-col items-center justify-center h-full gap-8 font-mono text-lg">
+                 <a href="#about" class="mobile-link text-light-slate hover:text-accent transition-colors">01. About</a>
+                 <a href="#projects" class="mobile-link text-light-slate hover:text-accent transition-colors">02. Work</a>
+                 <a href="#contact" class="mobile-link text-light-slate hover:text-accent transition-colors">03. Contact</a>
+            </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-6 pt-24">
-        <!-- Hero Section -->
-        <section id="home" class="min-h-screen flex items-center">
-            <div class="text-center md:text-left w-full">
-                <h1 id="hero-title" class="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
-                    Hi, I'm John Doe.
-                </h1>
-                <p class="mt-4 text-lg md:text-xl max-w-3xl mx-auto md:mx-0">
-                    I'm a <span id="typed-text" class="text-indigo-600 font-semibold"></span>
-                </p>
-                <a id="hero-button" href="#projects" class="mt-8 inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition-transform transform hover:scale-105">
-                    View My Work
-                </a>
-            </div>
+    <!-- LEFT SOCIAL SIDEBAR -->
+    <aside class="hidden md:flex fixed bottom-0 left-10 w-10 z-10 flex-col items-center gap-6">
+        <a href="#" class="text-slate hover:text-accent transform hover:-translate-y-1 transition-all duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24" class="w-5 h-5 fill-current"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297 24 5.67 18.627.297 12 .297z"></path></svg>
+        </a>
+        <a href="#" class="text-slate hover:text-accent transform hover:-translate-y-1 transition-all duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24" class="w-5 h-5 fill-current"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM6 9H2V21h4zM4 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"></path></svg>
+        </a>
+        <div class="h-24 w-px bg-slate mt-2"></div>
+    </aside>
+
+    <main class="mx-auto min-h-screen max-w-4xl px-6 sm:px-8 md:px-16 lg:px-24 pt-24">
+
+        <!-- HERO SECTION -->
+        <section id="hero" class="min-h-[calc(100vh-6rem)] flex flex-col justify-center reveal">
+            <p class="text-accent font-mono mb-4">Hi, my name is</p>
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold text-lightest-slate">Gautam Mudbhari.</h1>
+            <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold text-slate mt-2">I architect intelligent systems.</h2>
+            <p class="max-w-xl mt-6">
+                I'm a software developer specializing in building exceptional digital experiences. Currently, I'm focused on exploring the frontiers of peer-to-peer networking and artificial intelligence.
+            </p>
+            <a href="#projects" class="btn mt-12 w-max">Check out my work!</a>
         </section>
 
-        <!-- About Section -->
-        <section id="about" class="py-20 overflow-hidden">
-            <h2 class="section-title text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">About Me</h2>
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <div class="md:w-1/3 about-content">
-                    <img src="https://placehold.co/400x400/e0e7ff/4f46e5?text=JD" alt="John Doe" class="rounded-full mx-auto shadow-lg"
-                    onerror="this.onerror=null;this.src='https://placehold.co/400x400/1f2937/d1d5db?text=JD';">
-                </div>
-                <div class="md:w-2/3 about-content">
+        <!-- ABOUT SECTION -->
+        <section id="about" class="py-24 reveal">
+            <h2 class="numbered-heading text-lightest-slate">About Me</h2>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
+                <div class="md:col-span-3 text-light-slate">
                     <p class="mb-4">Hello! I'm a passionate and results-driven software developer with a knack for solving complex problems. My journey in technology has been driven by a curiosity to understand how things work and a desire to build things that matter.</p>
-                    <p class="mb-4">My expertise lies in full-stack development, with a strong focus on back-end technologies. I enjoy architecting and building scalable and efficient applications from the ground up.</p>
-                    <p>When I'm not coding, I enjoy contributing to open-source projects, exploring new AI research, and tinkering with hardware.</p>
+                    <p class="mb-4">I’m a backend developer exploring AI and peer-to-peer systems. I also build small desktop tools that focus on performance and utility.</p>
+                    <p>Here are a few technologies I've been working with recently:</p>
+                    <ul class="grid grid-cols-2 gap-2 mt-4 text-sm font-mono">
+                        <li class="flex items-center gap-2"><span class="text-accent">▹</span>Python</li>
+                        <li class="flex items-center gap-2"><span class="text-accent">▹</span>C# & .NET</li>
+                        <li class="flex items-center gap-2"><span class="text-accent">▹</span>PyTorch</li>
+                        <li class="flex items-center gap-2"><span class="text-accent">▹</span>Networking (Sockets)</li>
+                        <li class="flex items-center gap-2"><span class="text-accent">▹</span>Machine Learning</li>
+                        <li class="flex items-center gap-2"><span class="text-accent">▹</span>JavaScript (ES6+)</li>
+                    </ul>
                 </div>
-            </div>
+                <div class="md:col-span-2">
+                    <div class="relative w-full max-w-xs mx-auto group">
+                        <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-cyan-400 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                        <img src="https://placehold.co/400x400/0a192f/00c6ff?text=GM" alt="Gautam Mudbhari" class="relative rounded-md w-full">
+                    </div>
+                </div>
+            </div> 
         </section>
 
-        <!-- Projects Section -->
-        <section id="projects" class="py-20 overflow-hidden">
-            <h2 class="section-title text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">My Projects</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="project-card rounded-lg overflow-hidden shadow-lg" data-tilt>
-                     <img src="https://placehold.co/600x400/374151/e5e7eb?text=P2P+Network" alt="P2P File Sharing" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="font-bold text-xl mb-2 text-gray-900 dark:text-white">P2P File Sharing Platform</h3>
-                        <p class="text-base mb-4">A decentralized, peer-to-peer file sharing application built for speed and security.</p>
-                        <div class="flex flex-wrap gap-2"><span class="tag text-xs font-semibold inline-block py-1 px-2 rounded-full">Python</span><span class="tag text-xs font-semibold inline-block py-1 px-2 rounded-full">Sockets</span></div>
+        <!-- PROJECTS SECTION -->
+        <section id="projects" class="py-24">
+            <h2 class="numbered-heading text-lightest-slate reveal">My Work</h2>
+            
+            <!-- Project 1 -->
+            <div class="project-card grid md:grid-cols-12 gap-6 mb-16 reveal">
+                <div class="md:col-span-7 z-10 flex flex-col justify-center">
+                    <p class="text-accent font-mono text-sm">Featured Project</p>
+                    <h3 class="text-2xl font-bold text-lightest-slate hover:text-accent transition-colors"><a href="https://gautammih.github.io/PingDrop/">P2P File Sharing Platform</a></h3>
+                    <div class="p-6 my-4 rounded-md project-description-box">
+                        <p>A decentralized, peer-to-peer file sharing application built for speed and security. Users can share large files directly without relying on a central server, using custom network protocols.</p>
                     </div>
+                    <ul class="flex flex-wrap gap-x-4 gap-y-2 text-sm font-mono text-light-slate">
+                        <li>Python</li>
+                        <li>Sockets</li>
+                        <li>Networking</li>
+                    </ul>
                 </div>
-                <div class="project-card rounded-lg overflow-hidden shadow-lg" data-tilt>
-                    <img src="https://placehold.co/600x400/374151/e5e7eb?text=PC+Dashboard" alt="PC Monitoring Software" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="font-bold text-xl mb-2 text-gray-900 dark:text-white">PC-SysInfo Dashboard</h3>
-                        <p class="text-base mb-4">A lightweight Windows application that provides real-time system data monitoring.</p>
-                        <div class="flex flex-wrap gap-2"><span class="tag text-xs font-semibold inline-block py-1 px-2 rounded-full">C#</span><span class="tag text-xs font-semibold inline-block py-1 px-2 rounded-full">.NET</span></div>
-                    </div>
-                </div>
-                <div class="project-card rounded-lg overflow-hidden shadow-lg" data-tilt>
-                    <img src="https://placehold.co/600x400/374151/e5e7eb?text=AI+Racing" alt="Reinforcement Learning AI" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="font-bold text-xl mb-2 text-gray-900 dark:text-white">AI for TORCS Racing</h3>
-                        <p class="text-base mb-4"><span class="text-yellow-400 font-semibold">[In Progress]</span> Developing an RL model to pilot a car in the TORCS simulator.</p>
-                        <div class="flex flex-wrap gap-2"><span class="tag text-xs font-semibold inline-block py-1 px-2 rounded-full">Python</span><span class="tag text-xs font-semibold inline-block py-1 px-2 rounded-full">PyTorch</span></div>
-                    </div>
+                <div class="md:col-span-5 project-image-container rounded-md mt-4 md:mt-0 aspect-video overflow-hidden flex items-center">
+                     <img src="https://placehold.co/600x400/374151/e5e7eb?text=PingDrop" alt="P2P App" class="w-full h-full object-cover">
                 </div>
             </div>
-        </section>
-        
-        <!-- Skills Section -->
-        <section id="skills" class="py-20 overflow-hidden">
-            <h2 class="section-title text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">Core Skills</h2>
-            <div class="max-w-4xl mx-auto space-y-6">
-                <div class="skill-item">
-                    <div class="flex justify-between mb-1"><span class="font-semibold">Backend Development (Python, C#)</span><span>90%</span></div>
-                    <div class="w-full skill-bar-container rounded-full h-2.5"><div class="skill-bar h-2.5 rounded-full" style="width: 90%"></div></div>
+
+             <!-- Project 2 -->
+            <div class="project-card grid md:grid-cols-12 gap-6 mb-16 reveal">
+                 <div class="md:col-span-5 project-image-container rounded-md md:order-first mt-4 md:mt-0 aspect-video overflow-hidden flex items-center">
+                     <img src="https://placehold.co/600x400/374151/e5e7eb?text=Glanced" alt="PC Dashboard" class="w-full h-full object-cover">
                 </div>
-                <div class="skill-item">
-                    <div class="flex justify-between mb-1"><span class="font-semibold">AI & Reinforcement Learning</span><span>75%</span></div>
-                    <div class="w-full skill-bar-container rounded-full h-2.5"><div class="skill-bar h-2.5 rounded-full" style="width: 75%"></div></div>
-                </div>
-                 <div class="skill-item">
-                    <div class="flex justify-between mb-1"><span class="font-semibold">Networking & P2P Systems</span><span>85%</span></div>
-                    <div class="w-full skill-bar-container rounded-full h-2.5"><div class="skill-bar h-2.5 rounded-full" style="width: 85%"></div></div>
-                </div>
-                 <div class="skill-item">
-                    <div class="flex justify-between mb-1"><span class="font-semibold">Frontend & UI (HTML, CSS, JS)</span><span>70%</span></div>
-                    <div class="w-full skill-bar-container rounded-full h-2.5"><div class="skill-bar h-2.5 rounded-full" style="width: 70%"></div></div>
+                <div class="md:col-span-7 z-10 text-left md:text-right flex flex-col justify-center">
+                    <p class="text-accent font-mono text-sm">Featured Project</p>
+                    <h3 class="text-2xl font-bold text-lightest-slate hover:text-accent transition-colors"><a href="https://github.com/GautamMIH/Glanced">PC Info Dashboard</a></h3>
+                    <div class="p-6 my-4 rounded-md project-description-box">
+                        <p>A lightweight Windows application that provides real-time monitoring of crucial system data like CPU/GPU temperatures, clock speeds, and memory usage via a clean, modern interface.</p>
+                    </div>
+                    <ul class="flex flex-wrap justify-start md:justify-end gap-x-4 gap-y-2 text-sm font-mono text-light-slate">
+                        <li>C#</li>
+                        <li>.NET</li>
+                        <li>WPF</li>
+                        <li>System Internals</li>
+                    </ul>
                 </div>
             </div>
+
+            <!-- Project 3 -->
+            <div class="project-card grid md:grid-cols-12 gap-6 mb-16 reveal">
+                <div class="md:col-span-7 z-10 flex flex-col justify-center">
+                    <p class="text-accent font-mono text-sm">Featured Project <span class="text-xs text-slate">(In Progress)</span></p>
+                    <h3 class="text-2xl font-bold text-lightest-slate hover:text-accent transition-colors"><a href="#">AI for TORCS Racing</a></h3>
+                    <div class="p-6 my-4 rounded-md project-description-box">
+                        <p>Developing a reinforcement learning model to pilot a car in the TORCS racing simulator. The goal is to train an agent that can navigate complex tracks autonomously at high speeds.</p>
+                    </div>
+                    <ul class="flex flex-wrap gap-x-4 gap-y-2 text-sm font-mono text-light-slate">
+                        <li>Python</li>
+                        <li>PyTorch</li>
+                        <li>Reinforcement Learning</li>
+                        <li>AI</li>
+                    </ul>
+                </div>
+                <div class="md:col-span-5 project-image-container rounded-md mt-4 md:mt-0 aspect-video overflow-hidden flex items-center">
+                     <img src="https://placehold.co/600x400/374151/e5e7eb?text=AI+Racing" alt="TORCS AI" class="w-full h-full object-cover">
+                </div>
+            </div>
+
         </section>
 
-        <!-- Contact Section -->
-        <section id="contact" class="py-20 overflow-hidden">
-            <h2 class="section-title text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">Get In Touch</h2>
-            <div class="max-w-lg mx-auto text-center contact-content">
-                <p class="mb-8">I'm always open to discussing new projects, creative ideas, or opportunities. Feel free to reach out.</p>
-                <form id="contact-form" class="space-y-4">
-                    <input type="text" placeholder="Your Name" class="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-500">
-                    <input type="email" placeholder="Your Email" class="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-500">
-                    <textarea placeholder="Your Message" rows="5" class="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-500"></textarea>
-                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition-transform transform hover:scale-105">Send Message</button>
-                </form>
-                <div id="form-message" class="mt-4 text-green-500"></div>
-            </div>
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="py-24 text-center max-w-xl mx-auto reveal">
+            <h2 class="numbered-heading justify-center font-mono text-lg text-accent">What's Next?</h2>
+            <h3 class="text-5xl font-bold text-lightest-slate mt-4">Get In Touch</h3>
+            <p class="mt-6 mb-12">I'm always open to discussing new projects, creative ideas, or opportunities to be part of an ambitious vision. My inbox is always open, whether you have a question or just want to say hi, I’ll get back to you!</p>
+            <a href="mailto:johndoe@example.com" class="btn">Say Hello</a>
         </section>
+
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-100 dark:bg-gray-900 transition-colors duration-500">
-        <div class="container mx-auto px-6 py-8 text-center text-gray-500 dark:text-gray-400">
-            <p>&copy; 2024 John Doe. All Rights Reserved.</p>
-            <div class="flex justify-center space-x-4 mt-4">
-                <a href="#" class="hover:text-indigo-600 dark:hover:text-white">GitHub</a>
-                <a href="#" class="hover:text-indigo-600 dark:hover:text-white">LinkedIn</a>
-                <a href="#" class="hover:text-indigo-600 dark:hover:text-white">Twitter</a>
-            </div>
+    <footer class="text-center py-6 text-xs text-slate font-mono">
+        <div class="md:hidden flex justify-center gap-6 mb-4">
+            <a href="#" class="text-slate hover:text-accent transform hover:-translate-y-1 transition-all duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24" class="w-6 h-6 fill-current"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297 24 5.67 18.627.297 12 .297z"></path></svg>
+            </a>
+            <a href="#" class="text-slate hover:text-accent transform hover:-translate-y-1 transition-all duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24" class="w-6 h-6 fill-current"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM6 9H2V21h4zM4 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"></path></svg>
+            </a>
         </div>
+        <div>Inspired by brittanychiang.com | Built by John Doe</div>
     </footer>
+
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --- GSAP & Animation Setup ---
         gsap.registerPlugin(ScrollTrigger);
-        const cursorDot = document.querySelector('.cursor-dot');
-        const cursorOutline = document.querySelector('.cursor-outline');
 
-        // 1. Preloader Animation
-        const preloader = document.getElementById('preloader');
-        const preloaderText = document.querySelector('#preloader .loader-text');
-        
-        const preloaderTl = gsap.timeline();
-        preloaderTl
-            .fromTo(preloaderText, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' })
-            .to(preloaderText, { y: -20, opacity: 0, duration: 0.8, ease: 'power2.in' }, '+=0.2') // Reduced delay
-            .to(preloader, { 
-                opacity: 0, 
-                duration: 1, 
-                onComplete: () => {
-                    preloader.style.display = 'none';
-                    // Force cursor visibility after preloader is gone
-                    gsap.to([cursorDot, cursorOutline], { opacity: 1, duration: 0.5 });
-                } 
-            });
-
-        // 2. Hero Section Entrance Animation (after preloader)
-        const heroTl = gsap.timeline({ delay: preloaderTl.duration() - 0.8 }); // Adjusted delay
-        heroTl
-            .from('#hero-title', { opacity: 0, y: 30, duration: 0.8, ease: 'power3.out' })
-            .from('#typed-text', { opacity: 0, y: 30, duration: 0.6, ease: 'power3.out' }, '-=0.6')
-            .from('#hero-button', { opacity: 0, scale: 0.8, duration: 0.5, ease: 'back.out(1.7)' }, '-=0.4');
-
-        // 3. Typed.js for tagline
-        new Typed('#typed-text', {
-            strings: ['Software Developer.', 'AI Enthusiast.', 'Problem Solver.'],
-            typeSpeed: 50,
-            backSpeed: 30,
-            loop: true,
-            startDelay: preloaderTl.duration(),
-        });
-
-        // 4. Scroll-triggered Animations for sections
-        const sections = gsap.utils.toArray('section');
-        sections.forEach(section => {
-            const title = section.querySelector('.section-title');
-            const content = section.querySelectorAll('.about-content, .project-card, .skill-item, .contact-content');
-
-            const sectionTl = gsap.timeline({
+        // --- Animations ---
+        const revealElements = document.querySelectorAll(".reveal");
+        revealElements.forEach((el) => {
+            gsap.to(el, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: "power3.out",
                 scrollTrigger: {
-                    trigger: section,
-                    start: 'top 80%',
-                    toggleActions: 'play none none none',
-                }
+                    trigger: el,
+                    start: "top 90%",
+                    toggleActions: "play none none none",
+                },
             });
-
-            if (title) {
-                sectionTl.from(title, { opacity: 0, y: 50, duration: 0.6, ease: 'power2.out' });
-            }
-            if (content.length > 0) {
-                sectionTl.from(content, {
-                    opacity: 0,
-                    y: 50,
-                    duration: 0.6,
-                    stagger: 0.2,
-                    ease: 'power2.out'
-                }, '-=0.3');
-            }
-            
-            // Special animation for skill bars
-            if (section.id === 'skills') {
-                const skillBars = section.querySelectorAll('.skill-bar');
-                 gsap.from(skillBars, {
-                    scaleX: 0,
-                    duration: 1.5,
-                    stagger: 0.2,
-                    ease: 'power3.out',
-                    scrollTrigger: {
-                        trigger: '#skills',
-                        start: 'top 70%',
-                    }
-                });
-            }
-        });
-
-        // 5. Vanilla-tilt.js for 3D card effect
-        VanillaTilt.init(document.querySelectorAll(".project-card"), {
-            max: 15,
-            speed: 400,
-            glare: true,
-            "max-glare": 0.2
-        });
-
-        // --- UI & Interaction Setup ---
-        
-        // 6. Custom Cursor
-        window.addEventListener('mousemove', (e) => {
-            const { clientX, clientY } = e;
-            gsap.to(cursorDot, { x: clientX, y: clientY, duration: 0.2 });
-            gsap.to(cursorOutline, { x: clientX, y: clientY, duration: 0.6, ease: 'power2.out' });
         });
         
-        const interactiveElements = document.querySelectorAll('a, button, input, textarea');
-        interactiveElements.forEach(el => {
-            el.addEventListener('mouseenter', () => cursorOutline.classList.add('cursor-interact'));
-            el.addEventListener('mouseleave', () => cursorOutline.classList.remove('cursor-interact'));
-        });
+        // Staggered hero animation on load
+        gsap.timeline()
+            .to("#hero p.font-mono", { opacity: 1, y: 0, duration: 0.5, delay: 0.2 })
+            .to("#hero h1", { opacity: 1, y: 0, duration: 0.5 }, "-=0.3")
+            .to("#hero h2", { opacity: 1, y: 0, duration: 0.5 }, "-=0.3")
+            .to("#hero p:not(.font-mono)", { opacity: 1, y: 0, duration: 0.5 }, "-=0.3")
+            .to("#hero a", { opacity: 1, y: 0, duration: 0.5 }, "-=0.3");
 
-        // 7. Theme Switcher
-        const themeToggle = document.getElementById('theme-toggle');
-        const lightIcon = document.getElementById('theme-icon-light');
-        const darkIcon = document.getElementById('theme-icon-dark');
-        const htmlEl = document.documentElement;
-
-        // On load, set theme based on localStorage or system preference
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            htmlEl.classList.add('dark');
-            darkIcon.classList.remove('hidden');
-            lightIcon.classList.add('hidden');
-        } else {
-            htmlEl.classList.remove('dark');
-        }
-
-        themeToggle.addEventListener('click', () => {
-            htmlEl.classList.toggle('dark');
-            darkIcon.classList.toggle('hidden');
-            lightIcon.classList.toggle('hidden');
-            // Save preference to localStorage
-            if (htmlEl.classList.contains('dark')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.setItem('theme', 'light');
-            }
-        });
-
-        // 8. Mobile Menu
+        // --- Mobile Menu Toggle ---
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+        const openIcon = document.getElementById('menu-open-icon');
+        const closeIcon = document.getElementById('menu-close-icon');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
         
-        // 9. Contact Form
-        const contactForm = document.getElementById('contact-form');
-        const formMessage = document.getElementById('form-message');
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            formMessage.textContent = 'Thank you! Your message has been sent.';
-            contactForm.reset();
-            setTimeout(() => { formMessage.textContent = ''; }, 5000);
-        });
+        const toggleMenu = () => {
+             mobileMenu.classList.toggle('translate-x-full');
+             openIcon.classList.toggle('hidden');
+             closeIcon.classList.toggle('hidden');
+             document.body.classList.toggle('overflow-hidden'); // Prevent scrolling when menu is open
+        };
+        
+        menuBtn.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
+
+        // --- Side Nav Highlighting on Scroll ---
+        const sections = document.querySelectorAll("section[id]");
+        
+        // On desktop, we use the side nav. On mobile, we don't have one.
+        if (window.innerWidth >= 768) {
+             const navLinks = document.querySelectorAll(".side-nav a");
+             window.addEventListener("scroll", () => {
+                let current = "";
+                sections.forEach((section) => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 150) {
+                        current = section.getAttribute("id");
+                    }
+                });
+    
+                navLinks.forEach((a) => {
+                    a.classList.remove("active");
+                    if (a.getAttribute("href") === `#${current}`) {
+                        a.classList.add("active");
+                    }
+                });
+            });
+        }
     });
     </script>
+
 </body>
 </html>
