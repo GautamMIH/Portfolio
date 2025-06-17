@@ -38,8 +38,8 @@
             transform: translate(-50%, -50%);
             border-radius: 50%;
             z-index: 9999;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out, transform 0.2s ease-in-out;
+            opacity: 0; /* Initially hidden */
+            transition: transform 0.2s ease-in-out;
         }
         .cursor-dot {
             width: 8px;
@@ -50,9 +50,6 @@
             width: 40px;
             height: 40px;
             background-color: rgba(79, 70, 229, 0.2);
-        }
-        body:hover .cursor-dot, body:hover .cursor-outline {
-            opacity: 1;
         }
         .cursor-interact {
             transform: translate(-50%, -50%) scale(1.5);
@@ -281,6 +278,8 @@
     document.addEventListener('DOMContentLoaded', function() {
         // --- GSAP & Animation Setup ---
         gsap.registerPlugin(ScrollTrigger);
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
 
         // 1. Preloader Animation
         const preloader = document.getElementById('preloader');
@@ -289,11 +288,19 @@
         const preloaderTl = gsap.timeline();
         preloaderTl
             .fromTo(preloaderText, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' })
-            .to(preloaderText, { y: -20, opacity: 0, duration: 0.8, ease: 'power2.in' }, '+=1')
-            .to(preloader, { opacity: 0, duration: 1, onComplete: () => preloader.style.display = 'none' });
+            .to(preloaderText, { y: -20, opacity: 0, duration: 0.8, ease: 'power2.in' }, '+=0.2') // Reduced delay
+            .to(preloader, { 
+                opacity: 0, 
+                duration: 1, 
+                onComplete: () => {
+                    preloader.style.display = 'none';
+                    // Force cursor visibility after preloader is gone
+                    gsap.to([cursorDot, cursorOutline], { opacity: 1, duration: 0.5 });
+                } 
+            });
 
         // 2. Hero Section Entrance Animation (after preloader)
-        const heroTl = gsap.timeline({ delay: preloaderTl.duration() - 0.5 });
+        const heroTl = gsap.timeline({ delay: preloaderTl.duration() - 0.8 }); // Adjusted delay
         heroTl
             .from('#hero-title', { opacity: 0, y: 30, duration: 0.8, ease: 'power3.out' })
             .from('#typed-text', { opacity: 0, y: 30, duration: 0.6, ease: 'power3.out' }, '-=0.6')
@@ -362,9 +369,6 @@
         // --- UI & Interaction Setup ---
         
         // 6. Custom Cursor
-        const cursorDot = document.querySelector('.cursor-dot');
-        const cursorOutline = document.querySelector('.cursor-outline');
-
         window.addEventListener('mousemove', (e) => {
             const { clientX, clientY } = e;
             gsap.to(cursorDot, { x: clientX, y: clientY, duration: 0.2 });
